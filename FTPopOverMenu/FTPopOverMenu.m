@@ -164,7 +164,7 @@ typedef NS_ENUM(NSUInteger, FTPopOverMenuArrowDirection) {
 
     CGFloat margin = (configuration.menuRowHeight - FTDefaultMenuIconSize)/2.f;
     CGRect iconImageRect = CGRectMake(configuration.menuIconMargin, margin, FTDefaultMenuIconSize, FTDefaultMenuIconSize);
-    CGFloat menuNameX = iconImageRect.origin.x + iconImageRect.size.width + configuration.menuTextMargin;
+    CGFloat menuNameX = iconImageRect.origin.x + iconImageRect.size.width + configuration.menuTextMargin - 8.0;
     CGRect menuNameRect = CGRectMake(menuNameX, 0, configuration.menuWidth - menuNameX - configuration.menuTextMargin, configuration.menuRowHeight);
 
     if (!menuImage) {
