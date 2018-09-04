@@ -161,18 +161,25 @@ typedef NS_ENUM(NSUInteger, FTPopOverMenuArrowDirection) {
 
 - (void)setupWithMenuName:(NSString *)menuName menuImage:(id)menuImage selected:(BOOL)selected {
     FTPopOverMenuConfiguration *configuration = [FTPopOverMenuConfiguration defaultConfiguration];
-
-    CGFloat margin = (configuration.menuRowHeight - FTDefaultMenuIconSize)/2.f;
-    CGRect iconImageRect = CGRectMake(configuration.menuIconMargin, margin, FTDefaultMenuIconSize, FTDefaultMenuIconSize);
-    CGFloat menuNameX = iconImageRect.origin.x + iconImageRect.size.width + configuration.menuTextMargin - 8.0;
-    CGRect menuNameRect = CGRectMake(menuNameX, 0, configuration.menuWidth - menuNameX - configuration.menuTextMargin, configuration.menuRowHeight);
-
+    
+    self.menuNameLabel.font = configuration.textFont;
+    self.menuNameLabel.textColor = configuration.textColor;
+    self.menuNameLabel.textAlignment = configuration.textAlignment;
+    self.menuNameLabel.text = menuName;
+    [self.menuNameLabel sizeToFit];
+    [self.contentView addSubview:self.menuNameLabel];
+    
     if (!menuImage) {
-        menuNameRect = CGRectMake(configuration.menuTextMargin, 0, configuration.menuWidth - configuration.menuTextMargin*2, configuration.menuRowHeight);
+        self.menuNameLabel.frame = CGRectMake(0, 0, configuration.menuWidth, configuration.menuRowHeight);
     }else{
-        self.iconImageView.frame = iconImageRect;
-        self.iconImageView.tintColor = configuration.textColor;
-
+        CGFloat totalWidth = self.menuNameLabel.frame.size.width + FTDefaultMenuIconSize + 5.0;
+        CGFloat iconX = (configuration.menuWidth - totalWidth) / 2.0;
+        CGFloat iconY = (configuration.menuRowHeight - FTDefaultMenuIconSize) / 2.0;
+        CGFloat labelX = iconX + FTDefaultMenuIconSize + 5.0;
+        
+        self.iconImageView.frame = CGRectMake(iconX, iconY, FTDefaultMenuIconSize, FTDefaultMenuIconSize);
+        self.menuNameLabel.frame = CGRectMake(labelX, 0, self.menuNameLabel.frame.size.width, configuration.menuRowHeight);
+        
         [self getImageWithResource:menuImage
                         completion:^(UIImage *image) {
                             if (configuration.ignoreImageOriginalColor) {
@@ -182,12 +189,6 @@ typedef NS_ENUM(NSUInteger, FTPopOverMenuArrowDirection) {
                         }];
         [self.contentView addSubview:self.iconImageView];
     }
-    self.menuNameLabel.frame = menuNameRect;
-    self.menuNameLabel.font = configuration.textFont;
-    self.menuNameLabel.textColor = configuration.textColor;
-    self.menuNameLabel.textAlignment = configuration.textAlignment;
-    self.menuNameLabel.text = menuName;
-    [self.contentView addSubview:self.menuNameLabel];
 
     if (selected) {
         self.menuNameLabel.textColor = configuration.selectedTextColor;
